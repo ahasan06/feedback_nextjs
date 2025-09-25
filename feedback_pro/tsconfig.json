@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
     "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -17,19 +17,26 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "plugins": [{ "name": "next" }]
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "app/(user)/layout.jsx", "app/(user)/loading.jsx", "app/(user)/projects/[projectId]/page.jsx", "components/Header.jsx", "components/NewProjBtn.jsx", "components/submitProjectBtn.jsx", "components/Table.jsx", "components/FeedbackForm.jsx", "app/page.jsx", "app/(user)/dashboard/page.jsx", "app/(user)/dashboard/projectList.jsx", "actions/createFeedback.jsx", "actions/createProject.jsx"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "**/*.tsx",
+    "app/(user)/layout.jsx",
+    "app/(user)/loading.jsx",
+    "app/(user)/projects/[projectId]/page.jsx",
+    "components/Header.jsx",
+    "components/NewProjBtn.jsx",
+    "components/submitProjectBtn.jsx",
+    "components/Table.jsx",
+    "components/FeedbackForm.jsx",
+    "app/page.jsx",
+    "app/(user)/dashboard/page.jsx",
+    "app/(user)/dashboard/projectList.jsx",
+    "actions/createFeedback.jsx",
+    "actions/createProject.jsx"
+  ],
+  "exclude": ["node_modules"]
 }
