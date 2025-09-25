@@ -9,7 +9,7 @@ import { FeedbackForm } from "@/components/FeedbackForm";
 import { calculateFeedbackStats } from "@/utils/feedback";
 
 const ProjectPage = async ({ params }) => {
-  const { projectId } = params;
+   const { projectId } = await params; 
   const projectIdInt = parseInt(projectId);
 
   if (isNaN(projectIdInt)) {
