@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { Button } from './ui/button';
 import { Plus } from 'lucide-react';
 import {
@@ -14,82 +15,122 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { createFeedback } from "@/actions/createFeedback";
-import SubmitButton from './submitProjectBtn';
 
 export const FeedbackForm = ({ projectId }) => {
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [rating, setRating] = useState(5);
+  const [open, setOpen] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await axios.post('/api/feedback', {
+        projectId,
+        userName,
+        userEmail,
+        message,
+        rating,
+      });
+
+      // reset form
+      setMessage('');
+      setUserName('');
+      setUserEmail('');
+      setRating(5);
+
+      // close dialog
+      setOpen(false);
+
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.error || "Failed to submit feedback");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="cursor-pointer">
-            <Plus /> Submit Feedback
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="cursor-pointer">
+          <Plus /> Submit Feedback
+        </Button>
+      </DialogTrigger>
+
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>New Feedback</DialogTitle>
+          <DialogDescription>
+            Share your thoughts about this project
+          </DialogDescription>
+        </DialogHeader>
+
+        <form className="flex flex-col gap-4 py-4" onSubmit={handleSubmit}>
+          <input type="hidden" value={projectId} />
+
+          <div className="space-y-2">
+            <Label htmlFor="userName">Name</Label>
+            <Input
+              id="userName"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              placeholder="Enter your name"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="userEmail">Email</Label>
+            <Input
+              id="userEmail"
+              type="email"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="message">Message</Label>
+            <Textarea
+              id="message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Write your feedback here..."
+              className="min-h-24 max-w-full"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Rating</Label>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((num) => (
+                <Button
+                  key={num}
+                  type="button"
+                  size="sm"
+                  variant={rating === num ? "default" : "outline"}
+                  onClick={() => setRating(num)}
+                  className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer"
+                >
+                  {num}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <Button type="submit" disabled={loading} className="cursor-pointer mt-2">
+            {loading ? "Submitting..." : "Submit Feedback"}
           </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>New Feedback</DialogTitle>
-            <DialogDescription>
-              Share your thoughts about this project
-            </DialogDescription>
-          </DialogHeader>
-
-          <form className="flex flex-col gap-4 py-4" action={createFeedback}>
-            <input type="hidden" name="projectId" value={projectId} />
-
-            <div className="space-y-2">
-              <Label htmlFor="userName">Name</Label>
-              <Input
-                id="userName"
-                name="userName"
-                placeholder="Your name"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="userEmail">Email</Label>
-              <Input
-                id="userEmail"
-                name="userEmail"
-                placeholder="you@example.com"
-                type="email"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="message">Message</Label>
-              <Textarea
-                id="message"
-                name="message"
-                placeholder="Write your feedback..."
-                className="min-h-24 max-w-[450px] text-wrap"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="rating">Rating</Label>
-              <select
-                id="rating"
-                name="rating"
-                className="border rounded-md px-3 py-2 w-full"
-                defaultValue="5"
-                required
-              >
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <option key={num} value={num}>
-                    {num}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <SubmitButton />
-          </form>
-        </DialogContent>
-      </Dialog>
-    </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };

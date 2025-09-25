@@ -1,29 +1,24 @@
 import React from "react";
-import { db } from "@/db";
-import { eq } from "drizzle-orm";
-import { projects } from "@/db/schema";
 import Link from "next/link";
 import { ChevronLeft, MessageSquare, Star, Users } from "lucide-react";
 import Table from "@/components/Table";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { calculateFeedbackStats } from "@/utils/feedback";
+import axios from "axios";
 
 const ProjectPage = async ({ params }) => {
    const { projectId } = await params; 
-  const projectIdInt = parseInt(projectId);
+  let project;
+   const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 
-  if (isNaN(projectIdInt)) {
-    return <div className="flex min-h-screen items-center justify-center">Invalid Project ID</div>;
-  }
-
-  const projectList = await db.query.projects.findMany({
-    where: eq(projects.id, projectIdInt),
-    with: { feedbacks: true },
-  });
-
-  const project = projectList[0];
-  if (!project) {
-    return <div className="flex min-h-screen items-center justify-center">Project Not Found</div>;
+  try {
+    const res = await axios.get(`${baseURL}/api/feedback`, {
+      params: { projectId },
+    });
+    project = res.data;
+  } catch (error) {
+    const message = error.response?.data?.error || "Something went wrong";
+    return <div className="flex min-h-screen items-center justify-center">{message}</div>;
   }
 
   const stats = calculateFeedbackStats(project.feedbacks);
