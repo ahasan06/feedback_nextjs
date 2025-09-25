@@ -6,6 +6,7 @@ import { projects } from "@/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import ProjectList from './projectList';
 import Image from "next/image";
+import mobile_image from '/public/dashboard_mobile.png'
 
 export default async function Page() {
   const { userId } = await auth();
@@ -21,7 +22,7 @@ export default async function Page() {
   return (
     <div className=" mx-auto px-6 py-5 min-h-screen">
       {/* Header Section */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-indigo-50 to-white p-6 rounded-2xl shadow-sm mb-10">
+      <div className=" relative flex items-center justify-between bg-gradient-to-r from-indigo-50 to-white p-6 rounded-2xl shadow-sm mb-10">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
             Collect Meaningful Feedback
@@ -34,13 +35,13 @@ export default async function Page() {
             <NewProjBtn />
           </div>
         </div>
-        <div className="hidden sm:block">
+        <div className="hidden sm:block ">
           <Image
-            src="/feedback-illustration.svg" // 👉 put a relevant illustration inside /public
+            src={mobile_image} 
             alt="Feedback Illustration"
-            width={180}
-            height={180}
-            className="opacity-95"
+            width={200}
+            height={200}
+            className="opacity-95 hidden lg:block absolute bottom-5 right-0"
           />
         </div>
       </div>

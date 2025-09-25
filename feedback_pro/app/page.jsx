@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from "@/components/ui/button";
+import hero_feedback from '../public/hero_feedback.jpg' 
 export default function HomePage() {
   return (
     <div className="relative bg-white overflow-hidden">
@@ -31,7 +32,7 @@ export default function HomePage() {
           <div className="mt-10 lg:mt-0 lg:col-span-6 flex justify-center lg:justify-end">
             <div className="relative w-full max-w-lg lg:max-w-xl">
               <Image
-                src="/dummy-illustration.svg" // put any dummy illustration inside /public
+                src={hero_feedback} 
                 alt="Feedback illustration"
                 width={500}
                 height={500}
