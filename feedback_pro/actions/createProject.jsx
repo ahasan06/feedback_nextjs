@@ -1,23 +1,35 @@
-'use server';
-
+"use server";
+import { projectSchema } from "@/schemas/projectSchema";
 import { db } from "@/db";
-import { auth } from "@clerk/nextjs/server";
 import { projects } from "@/db/schema";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-export async function createProject(formData) {
-  const { userId } = await auth();
+export async function createProject(prevState, formData) {
+   const { userId } = await auth();
 
-  const project = {
-    name: formData.get("name"),
-    description: formData.get("description"),
-    userId,
+  const values = {
+    name: formData.get("name") || "",
+    description: formData.get("description") || "",
   };
-  
-  const [newProject] = await db
-    .insert(projects)
-    .values(project)
-    .returning({ insertedId: projects.id });
 
+  // Validate input
+  const result = projectSchema.safeParse(values);
+  if (!result.success) {
+    return {
+      success: false,
+      errors: result.error.flatten().fieldErrors,
+      values,
+    };
+  }
+
+  // Insert into DB, include userId
+  await db.insert(projects).values({
+    name: values.name,
+    description: values.description,
+    userId, 
+  });
   redirect(`/dashboard`);
+  return { success: true, errors: {}, values: { name: "", description: "" } };
+  
 }
