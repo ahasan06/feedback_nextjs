@@ -7,15 +7,14 @@ import { redirect } from "next/navigation";
 export async function createProject(formData) {
   const { userId } = await auth();
 
-  const project = {
+  const projectData = {
     name: formData.get("name"),
     description: formData.get("description"),
-    userId,
   };
 
-  const [newProject] = await db
-    .insert(projects)
-    .values(project)
+
+  const [newProject] = await db.insert(projects)
+    .values({ ...projectData, userId })
     .returning({ insertedId: projects.id });
 
   redirect(`/dashboard`);

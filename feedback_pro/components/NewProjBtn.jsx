@@ -12,8 +12,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-
 import { createProject } from "@/actions/createProject";
 import SubmitButton from './submitProjectBtn';
 
@@ -37,6 +35,7 @@ function NewProjBtn() {
                                     id="name"
                                     name='name'
                                     placeholder="Your Project name"
+                                    required
                                 />
                             </div>
                             <div className="space-y-2">
@@ -46,6 +45,7 @@ function NewProjBtn() {
                                     name="description"
                                     placeholder="Write a brief description..."
                                     className="min-h-32"
+                                    required
                                 />
                             </div>
                             <SubmitButton/>
